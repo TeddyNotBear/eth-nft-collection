@@ -2,7 +2,10 @@
 
 ## Configuration
 
-Add a personnal RPC on a `.env` file if you want or by default it uses `https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161`.
+- Add a personnal RPC on a `.env` file if you want or by default it uses `https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161`.
+- Add your wallet private key in the `.env` file. !!! NOT IN CLEAR IN THE CODE !!!
+- Add your atherscan api key in the `.env`.
+
 
 ## Installation
 
