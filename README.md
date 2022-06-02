@@ -2,7 +2,7 @@
 
 ## Configuration
 
-Create an account on [Alchemy](https://www.alchemy.com/) and get an API key Rinkeby testnet.
+Add a personnal RPC on a `.env` file if you want or by default it uses https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161.
 
 ## Installation
 
