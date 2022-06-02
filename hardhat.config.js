@@ -11,7 +11,8 @@ module.exports = {
   solidity: "0.8.7",
   networks: {
     rinkeby: {
-      url: process.env.RPC || "https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+      url: process.env.RPC || "https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+      accounts: [ process.env.WALLET_PK ]
     }
   }
 };
