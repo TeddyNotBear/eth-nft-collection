@@ -13,19 +13,20 @@ interface Props {
 
 declare let window: any;
 
-export default function PublicMintNFT(props:Props){
+export default function Initialize(props:Props){
     const addressContract = props.addressContract
     const currentAccount = props.currentAccount
-    const [ammount,setAmmount]=useState<string>('1')
+    const [name,setName] = useState<string>('')
+    const [symbol,setSymbol] = useState<string>('')
   
-    async function publicMintNft(event:React.FormEvent) {
+    async function initialize(event:React.FormEvent) {
         event.preventDefault()
         if(!window.ethereum) return    
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
         const advancedNft:Contract = new ethers.Contract(addressContract, abi, signer)
 
-        advancedNft.publicMintNft(ammount, {value: ethers.utils.parseEther( (0.025 * Number(ammount)).toString() ) })
+        advancedNft.initialize(name, symbol)
             .then((tr: TransactionResponse) => {
                 console.log(`TransactionResponse TX hash: ${tr.hash}`)
                 tr.wait().then((receipt:TransactionReceipt)=>{console.log("mint public nft receipt", receipt)})
@@ -33,16 +34,17 @@ export default function PublicMintNFT(props:Props){
             .catch((e:Error)=>console.log(e))
     }
 
-    const handleChange = (value:string) => setAmmount(value)
+    const handleChangeName = (value:string) => setName(value)
+    const handleChangeSymbol = (value:string) => setSymbol(value)
 
     return (
-        <form onSubmit={publicMintNft}>
+        <form onSubmit={initialize}>
             <FormControl>
-                <FormLabel htmlFor='amount'>Amount: </FormLabel>
-                <NumberInput defaultValue={ammount} min={1} max={3} onChange={handleChange}>
-                    <NumberInputField />
-                </NumberInput>
-                <Button type="submit" isDisabled={!currentAccount}>Mint</Button>
+                <FormLabel htmlFor='name'>Name: </FormLabel>
+                <Input value={name} onChange={(e) => handleChangeName(e.target.value)}/>
+                <FormLabel htmlFor='symbol'>Symbol: </FormLabel>
+                <Input value={symbol} onChange={(e) => handleChangeSymbol(e.target.value)}/>
+                <Button type="submit" isDisabled={!currentAccount}>Initialize</Button>
             </FormControl>
         </form>
     )

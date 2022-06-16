@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
+import 'erc721a-upgradeable/contracts/ERC721AUpgradeable.sol';
+import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/finance/PaymentSplitterUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -9,7 +10,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 // Ownable, Reentrancy, PaymentSplitter
-contract AdvancedNFT is ERC721EnumerableUpgradeable, ReentrancyGuardUpgradeable {
+contract AdvancedNFTV2 is ERC721AUpgradeable, ReentrancyGuardUpgradeable, OwnableUpgradeable {
     using ECDSA for bytes32;
     using Counters for Counters.Counter;
     using Strings for uint256;
@@ -38,8 +39,9 @@ contract AdvancedNFT is ERC721EnumerableUpgradeable, ReentrancyGuardUpgradeable 
 
     mapping(address => uint256) public nftsPerWallet;
 
-    function initialize(string memory _name, string memory _symbol) initializer public {
-        __ERC721_init(_name, _symbol);
+    function initialize(string memory _name, string memory _symbol) initializerERC721A initializer public {
+        __ERC721A_init(_name, _symbol);
+        __Ownable_init();
 
         MAX_SUPPLY_NFT = 50000;
         publicSaleNftPrice = 25000000000000000;
@@ -138,15 +140,6 @@ contract AdvancedNFT is ERC721EnumerableUpgradeable, ReentrancyGuardUpgradeable 
         return bytes(currentBaseURI).length > 0
             ? string(abi.encodePacked(currentBaseURI, tokenId.toString(),".json"))
             : "";
-    }
-
-    function walletOfOwner(address _owner) public view returns (uint256[] memory) {
-        uint256 ownerTokenCount = balanceOf(_owner);
-        uint256[] memory tokenIds = new uint256[](ownerTokenCount);
-        for (uint256 i; i < ownerTokenCount; i++) {
-            tokenIds[i] = tokenOfOwnerByIndex(_owner, i);
-        }
-        return tokenIds;
     }
 
     function launchPublicSale() external {

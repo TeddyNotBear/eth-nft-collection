@@ -6,8 +6,8 @@ def generateMetadata(dna, id, date):
     metadata = {
         "dna": dna,
         "name": "ESGI Collection #" + str(id),
-        "description": "The Meka Ape Club is a collection of 5,640 unique NFTs - Play to Earn Gaming Characters & unique digital collectibles living on the Metaverse",
-        "image": "ipfs://QmaZnxipfjeoQa9KdfqvrchoemTrXSMWZvn2pPM8vLrTr8/" + str(id) + ".jpeg",
+        "description": "First ESGI Collection based on green creature",
+        "image": "ipfs://Qme37b6jg5foNtXHP85pRMZEki8ncZELVXdQmEcdBuRLNR/" + str(id) + ".jpeg",
         "edition": id,
         "date": date,
         "attributes": [
@@ -52,8 +52,8 @@ def generateMetadataNotRevealed(dna, id, date):
     metadata = {
         "dna": dna,
         "name": "ESGI Collection #" + str(id),
-        "description": "The Meka Ape Club is a collection of 5,640 unique NFTs - Play to Earn Gaming Characters & unique digital collectibles living on the Metaverse",
-        "image": "ipfs://QmdmCt3sVT2MamZwr8HdsH4uy1i3MfzWgfC3y5YVirZR95/hidden.png",
+        "description": "First ESGI Collection based on green creature",
+        "image": "ipfs://Qmcxs1kEdxjNq3yxE4rmUriFN3VJEQWm1ggyvcEmDtsg1G/hidden.png",
         "edition": id,
         "date": date,
         "compiler": "ESGI"

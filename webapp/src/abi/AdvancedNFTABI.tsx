@@ -227,6 +227,25 @@ export const AdvancedNFTABI = [
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "signature",
+        "type": "bytes"
+      }
+    ],
+    "name": "getSignerRecovery",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "getWhitelistSaleNftPrice",
     "outputs": [
@@ -386,7 +405,13 @@ export const AdvancedNFTABI = [
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "bool",
+        "name": "_state",
+        "type": "bool"
+      }
+    ],
     "name": "pause",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -730,11 +755,11 @@ export const AdvancedNFTABI = [
       },
       {
         "internalType": "bytes",
-        "name": "_signature",
+        "name": "signature",
         "type": "bytes"
       }
     ],
-    "name": "whitelistMintNft",
+    "name": "whitelistMint",
     "outputs": [],
     "stateMutability": "payable",
     "type": "function"

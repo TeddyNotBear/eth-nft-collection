@@ -13,19 +13,19 @@ interface Props {
 
 declare let window: any;
 
-export default function PublicMintNFT(props:Props){
+export default function SetBaseURI(props:Props){
     const addressContract = props.addressContract
     const currentAccount = props.currentAccount
-    const [ammount,setAmmount]=useState<string>('1')
+    const [newBaseURI,setNewBaseURI]=useState<string>('')
   
-    async function publicMintNft(event:React.FormEvent) {
+    async function setBaseURI(event:React.FormEvent) {
         event.preventDefault()
         if(!window.ethereum) return    
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
         const advancedNft:Contract = new ethers.Contract(addressContract, abi, signer)
 
-        advancedNft.publicMintNft(ammount, {value: ethers.utils.parseEther( (0.025 * Number(ammount)).toString() ) })
+        advancedNft.setBaseURI(newBaseURI)
             .then((tr: TransactionResponse) => {
                 console.log(`TransactionResponse TX hash: ${tr.hash}`)
                 tr.wait().then((receipt:TransactionReceipt)=>{console.log("mint public nft receipt", receipt)})
@@ -33,16 +33,14 @@ export default function PublicMintNFT(props:Props){
             .catch((e:Error)=>console.log(e))
     }
 
-    const handleChange = (value:string) => setAmmount(value)
+    const handleChange = (value:string) => setNewBaseURI(value)
 
     return (
-        <form onSubmit={publicMintNft}>
+        <form onSubmit={setBaseURI}>
             <FormControl>
-                <FormLabel htmlFor='amount'>Amount: </FormLabel>
-                <NumberInput defaultValue={ammount} min={1} max={3} onChange={handleChange}>
-                    <NumberInputField />
-                </NumberInput>
-                <Button type="submit" isDisabled={!currentAccount}>Mint</Button>
+                <FormLabel htmlFor='amount'>Base URI: </FormLabel>
+                <Input value={newBaseURI} onChange={(e) => handleChange(e.target.value)}/>
+                <Button type="submit" isDisabled={!currentAccount}>Set</Button>
             </FormControl>
         </form>
     )

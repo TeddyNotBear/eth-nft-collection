@@ -19,7 +19,8 @@ export default function ReadAdvancedNFT(props:Props){
     const [publicSaleNftPrice, setPublicSaleNftPrice] = useState<string>()
     const [whitelistSaleNftPrice, setWhitelistSaleNftPrice] = useState<string>()
     const [symbol,setSymbol] = useState<string>("")
-    const [balance, SetBalance] = useState<number|undefined>(undefined)
+    const [sellingStep,setSellingStep] = useState<string>("")
+    const [balance, setBalance] = useState<number|undefined>(undefined)
 
     useEffect(()=>{
         if(!window.ethereum) return
@@ -34,7 +35,7 @@ export default function ReadAdvancedNFT(props:Props){
     
         advancedNft.balanceOf(currentAccount)
         .then((result:string)=>{
-            SetBalance(Number(result))
+            setBalance(Number(result))
         })
         .catch('error', console.error)
     }
@@ -46,11 +47,11 @@ export default function ReadAdvancedNFT(props:Props){
         const advancedNft = new ethers.Contract(addressContract, abi, provider)
 
         advancedNft.getInitialTotalSupply().then((result:string)=>{
-            setMaxSupplyNft(ethers.utils.formatEther(result))
+            setMaxSupplyNft(result.toString())
         }).catch('error', console.error)
 
         advancedNft.totalSupply().then((result:string)=>{
-            setNftsSold(ethers.utils.formatEther(result))
+            setNftsSold(result.toString())
         }).catch('error', console.error)
 
         advancedNft.getPublicSaleNftPrice().then((result:string)=>{
@@ -64,11 +65,17 @@ export default function ReadAdvancedNFT(props:Props){
         advancedNft.symbol().then((result:string)=>{
             setSymbol(result)
         }).catch('error', console.error)
+
+        advancedNft.sellingStep().then((result:string)=>{
+            setSellingStep(result)
+        }).catch('error', console.error)
     }) 
 
     return (
         <div>
             <Text><b>ReadAdvancedNFT Contract</b>: {addressContract}</Text>
+            <Text mt={4}>0 : NotStarted | 1 : WhitelistedSale | 2 : PublicSale | 3 : SoldOut | 4 : Reveal</Text>
+            <Text mb={4}><b>Selling step</b>: {sellingStep}</Text>
             <Text><b>Nft total supply: </b>{ maxSupplyNft } {symbol}</Text>
             <Text><b>Number of nfts sold: </b>{ nftsSold } {symbol}</Text>
             <Text><b>Nft price for public sale: </b>{ publicSaleNftPrice }</Text>

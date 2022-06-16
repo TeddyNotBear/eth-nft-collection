@@ -7,8 +7,13 @@ import { useState, useEffect} from 'react'
 import { ethers } from "ethers"
 import ReadAdvancedNFT from "../components/ReadAdvancedNFT"
 import PublicMintNFT from "../components/PublicMintNft"
+import WhitelistMintNft from "../components/WhitelistMintNft"
+import Initialize from "../components/Initialize"
+import SetBaseURI from "../components/SetBaseURI"
+import ChangeSellingStep from "../components/ChangeSellingStep"
 
 declare let window: any
+const CONTRACT_ADDRESS = '0x7393539A6f7F3eB004E6728f367cFd75407a473a'
 
 const Home: NextPage = () => {
   const [balance, setBalance] = useState<string | undefined>()
@@ -41,10 +46,10 @@ const Home: NextPage = () => {
 
     // MetaMask requires requesting permission to connect users accounts
     provider.send("eth_requestAccounts", [])
-    .then((accounts)=>{
-      if(accounts.length>0) setCurrentAccount(accounts[0])
-    })
-    .catch((e)=>console.log(e))
+      .then((accounts)=>{
+        if(accounts.length>0) setCurrentAccount(accounts[0])
+      })
+      .catch((e)=>console.log(e))
   }
 
   const onClickDisconnect = () => {
@@ -80,16 +85,44 @@ const Home: NextPage = () => {
           : <></>
         }
         <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
-          <Heading my={4}  fontSize='xl'>Read AdvancedNFT Info</Heading>
+          <Heading my={4}  fontSize='xl'>Read Contract Info</Heading>
           <ReadAdvancedNFT 
-            addressContract='0xE266fdEEA47f1b20fCb39703e11dD0Bd07ae3C1B'
+            addressContract={CONTRACT_ADDRESS}
             currentAccount={currentAccount}
           />
         </Box>
         <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
-          <Heading my={4}  fontSize='xl'>Public Mint Nft AdvancedNFT</Heading>
-          <PublicMintNFT 
-            addressContract='0xE266fdEEA47f1b20fCb39703e11dD0Bd07ae3C1B'
+          <Heading my={4}  fontSize='xl'>Change selling step</Heading>
+          <ChangeSellingStep 
+            addressContract={CONTRACT_ADDRESS}
+            currentAccount={currentAccount}
+          />
+        </Box>
+        <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
+          <Heading my={4}  fontSize='xl'>Initialize contract</Heading>
+          <Initialize 
+            addressContract={CONTRACT_ADDRESS}
+            currentAccount={currentAccount}
+          />
+        </Box>
+        <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
+          <Heading my={4}  fontSize='xl'>Set base URI</Heading>
+          <SetBaseURI 
+            addressContract={CONTRACT_ADDRESS}
+            currentAccount={currentAccount}
+          />
+        </Box>
+        <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
+          <Heading my={4}  fontSize='xl'>Whitelist Mint Nft</Heading>
+          <WhitelistMintNft 
+            addressContract={CONTRACT_ADDRESS}
+            currentAccount={currentAccount}
+          />
+        </Box>
+        <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
+          <Heading my={4}  fontSize='xl'>Public Mint Nft</Heading>
+          <PublicMintNFT
+            addressContract={CONTRACT_ADDRESS}
             currentAccount={currentAccount}
           />
         </Box>
