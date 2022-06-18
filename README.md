@@ -16,7 +16,7 @@ npx hardhat run scripts/deploy.js --network rinkeby
 
 - Verify contract code: 
 ```bash
-npx hardhat verify --network rinkeby CONTRACT_ADDRESS
+npx hardhat verify --network rinkeby CONTRACT_ADDRESS "TOKEN_NAME" "TOKEN_SYMBOL"
 ```
 
 ## Usage
@@ -31,4 +31,5 @@ yarn install
 cd webapp
 yarn dev
 ```
+
 

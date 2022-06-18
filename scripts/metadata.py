@@ -7,7 +7,7 @@ def generateMetadata(dna, id, date):
         "dna": dna,
         "name": "ESGI Collection #" + str(id),
         "description": "First ESGI Collection based on green creature",
-        "image": "ipfs://Qme37b6jg5foNtXHP85pRMZEki8ncZELVXdQmEcdBuRLNR/" + str(id) + ".jpeg",
+        "image": "ipfs://Qme37b6jg5foNtXHP85pRMZEki8ncZELVXdQmEcdBuRLNR/" + str(id) + ".png",
         "edition": id,
         "date": date,
         "attributes": [
@@ -67,7 +67,7 @@ def generateMetadataNotRevealed(dna, id, date):
 def main():
     dt = datetime.now()
     ts = datetime.timestamp(dt)
-    for _ in(i+1 for i in range(3)):
+    for _ in(i+1 for i in range(4)):
         generateMetadata(uuid.uuid4().hex, _, ts)
         generateMetadataNotRevealed(uuid.uuid4().hex, _, ts)
 

@@ -2,7 +2,7 @@ import React, { useEffect,useState } from 'react';
 import { Text, Button, Input , NumberInput,  NumberInputField,  FormControl,  FormLabel, Grid } from '@chakra-ui/react'
 import { ethers, Bytes} from 'ethers'
 import {parseEther } from 'ethers/lib/utils'
-import {AdvancedNFTABI as abi} from 'abi/AdvancedNFTABI'
+import {NftCollectionABI as abi} from 'abi/NftCollectionABI'
 import { Contract } from "ethers"
 import { TransactionResponse,TransactionReceipt } from "@ethersproject/abstract-provider"
 
@@ -22,9 +22,9 @@ export default function ChangeSellingStep(props:Props){
         if(!window.ethereum) return    
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
-        const advancedNft:Contract = new ethers.Contract(addressContract, abi, signer)
+        const nftCollection:Contract = new ethers.Contract(addressContract, abi, signer)
 
-        advancedNft.launchPublicSale()
+        nftCollection.launchPublicSale()
             .then((tr: TransactionResponse) => {
                 console.log(`TransactionResponse TX hash: ${tr.hash}`)
                 tr.wait().then((receipt:TransactionReceipt)=>{console.log("launch public sale receipt", receipt)})
@@ -37,9 +37,9 @@ export default function ChangeSellingStep(props:Props){
         if(!window.ethereum) return    
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
-        const advancedNft:Contract = new ethers.Contract(addressContract, abi, signer)
+        const nftCollection:Contract = new ethers.Contract(addressContract, abi, signer)
 
-        advancedNft.launchWhitelistedSale()
+        nftCollection.launchWhitelistedSale()
             .then((tr: TransactionResponse) => {
                 console.log(`TransactionResponse TX hash: ${tr.hash}`)
                 tr.wait().then((receipt:TransactionReceipt)=>{console.log("launch whitelist sale receipt", receipt)})
@@ -52,9 +52,9 @@ export default function ChangeSellingStep(props:Props){
         if(!window.ethereum) return    
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
-        const advancedNft:Contract = new ethers.Contract(addressContract, abi, signer)
+        const nftCollection:Contract = new ethers.Contract(addressContract, abi, signer)
 
-        advancedNft.reveal()
+        nftCollection.reveal()
             .then((tr: TransactionResponse) => {
                 console.log(`TransactionResponse TX hash: ${tr.hash}`)
                 tr.wait().then((receipt:TransactionReceipt)=>{console.log("launch whitelist sale receipt", receipt)})
@@ -62,8 +62,23 @@ export default function ChangeSellingStep(props:Props){
             .catch((e:Error)=>console.log(e))
     }
 
+    async function pause(event:React.FormEvent) {
+        event.preventDefault()
+        if(!window.ethereum) return    
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const signer = provider.getSigner()
+        const nftCollection:Contract = new ethers.Contract(addressContract, abi, signer)
+
+        nftCollection.pause()
+            .then((tr: TransactionResponse) => {
+                console.log(`TransactionResponse TX hash: ${tr.hash}`)
+                tr.wait().then((receipt:TransactionReceipt)=>{console.log("pause receipt", receipt)})
+            })
+            .catch((e:Error)=>console.log(e))
+    }
+
     return (
-        <Grid templateColumns='repeat(3, 1fr)' gap={3}>
+        <Grid templateColumns='repeat(4, 1fr)' gap={3}>
             <form onSubmit={launchPublicSale}>
                 <FormControl>
                     <Button type="submit" colorScheme='pink' w='100%'>
@@ -82,6 +97,13 @@ export default function ChangeSellingStep(props:Props){
                 <FormControl>
                     <Button type="submit" colorScheme='linkedin' w='100%'>
                        Reveal
+                    </Button>
+                </FormControl>
+            </form>
+            <form onSubmit={pause}>
+                <FormControl>
+                    <Button type="submit" colorScheme='facebook' w='100%'>
+                       Pause
                     </Button>
                 </FormControl>
             </form>

@@ -1,19 +1,18 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import NextLink from "next/link"
 import { VStack, Heading, Box, LinkOverlay, LinkBox} from "@chakra-ui/layout"
 import { Text, Button } from '@chakra-ui/react'
 import { useState, useEffect} from 'react'
 import { ethers } from "ethers"
-import ReadAdvancedNFT from "../components/ReadAdvancedNFT"
+import ReadNftCollection from "../components/ReadNftCollection"
 import PublicMintNFT from "../components/PublicMintNft"
 import WhitelistMintNft from "../components/WhitelistMintNft"
-import Initialize from "../components/Initialize"
 import SetBaseURI from "../components/SetBaseURI"
+import SetNotRevealedURI from "../components/SetNotRevealedURI"
 import ChangeSellingStep from "../components/ChangeSellingStep"
 
 declare let window: any
-const CONTRACT_ADDRESS = '0x7393539A6f7F3eB004E6728f367cFd75407a473a'
+const CONTRACT_ADDRESS = "0x4f01DA70DC283B2fcb0Ecae1BF37255167b2bcF1"
 
 const Home: NextPage = () => {
   const [balance, setBalance] = useState<string | undefined>()
@@ -61,10 +60,10 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>AdvancedNFT</title>
+        <title>AdvancedNFT Collection</title>
       </Head>
 
-      <Heading as="h3"  my={4}>AdvancedNFT Implementation</Heading>          
+      <Heading as="h3"  my={4}>Advanced implementation of NFT collection</Heading>          
       <VStack>
         <Box w='100%' my={4}>
           {currentAccount  
@@ -86,7 +85,7 @@ const Home: NextPage = () => {
         }
         <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
           <Heading my={4}  fontSize='xl'>Read Contract Info</Heading>
-          <ReadAdvancedNFT 
+          <ReadNftCollection 
             addressContract={CONTRACT_ADDRESS}
             currentAccount={currentAccount}
           />
@@ -99,15 +98,15 @@ const Home: NextPage = () => {
           />
         </Box>
         <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
-          <Heading my={4}  fontSize='xl'>Initialize contract</Heading>
-          <Initialize 
+          <Heading my={4}  fontSize='xl'>Set base URI</Heading>
+          <SetBaseURI 
             addressContract={CONTRACT_ADDRESS}
             currentAccount={currentAccount}
           />
         </Box>
         <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
-          <Heading my={4}  fontSize='xl'>Set base URI</Heading>
-          <SetBaseURI 
+          <Heading my={4}  fontSize='xl'>Set not revealed URI</Heading>
+          <SetNotRevealedURI 
             addressContract={CONTRACT_ADDRESS}
             currentAccount={currentAccount}
           />

@@ -1,11 +1,19 @@
-const { ethers, upgrades } = require('hardhat');
+// npx hardhat run --network localhost scripts/deployV2.js
+
+const { ethers } = require('hardhat');
 
 async function main () {
-    const AdvancedNFT = await ethers.getContractFactory('AdvancedNFT');
-    console.log('Deploying AdvancedNFT...');
-    const advancedNFT = await upgrades.deployProxy(AdvancedNFT, ['AdvancedNFT', 'AdvancedNFT'], { initializer: 'initialize' });
-    await advancedNFT.deployed();
-    console.log('AdvancedNFT deployed to:', advancedNFT.address);
+    const NftCollection = await ethers.getContractFactory("NftCollection");
+    const nftCollection = await NftCollection.deploy("ESGI NFT School Project", "ENSP");
+  
+    await nftCollection.deployed();
+  
+    console.log("NftCollection deployed to:", nftCollection.address);
 }
 
-main();
+main()
+    .then(() => process.exit(0))
+    .catch((error) => {
+    console.error(error);
+    process.exit(1);
+    });

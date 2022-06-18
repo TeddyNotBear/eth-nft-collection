@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "erc721a/contracts/ERC721A.sol";
+import '@openzeppelin/contracts/access/Ownable.sol';
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts-upgradeable/finance/PaymentSplitterUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 // Ownable, Reentrancy, PaymentSplitter
-contract AdvancedNFT is ERC721EnumerableUpgradeable, ReentrancyGuardUpgradeable {
+contract NftCollection is ERC721A, ReentrancyGuard, Ownable {
     using ECDSA for bytes32;
     using Counters for Counters.Counter;
     using Strings for uint256;
@@ -21,36 +22,25 @@ contract AdvancedNFT is ERC721EnumerableUpgradeable, ReentrancyGuardUpgradeable 
     enum Steps { NotStarted, WhitelistedSale, PublicSale, SoldOut, Reveal }
     Steps public sellingStep;
 
-    address private _ownerAddress;
-
-    uint256 public MAX_SUPPLY_NFT;
-    uint256 public publicSaleNftPrice;
-    uint256 public whitelistSaleNftPrice;
-    uint256 public maxNftPurchase;
+    uint256 public MAX_SUPPLY_NFT = 50000;
+    uint256 public publicSaleNftPrice = 25000000000000000;
+    uint256 public whitelistSaleNftPrice = 20000000000000000;
+    uint256 public maxNftPurchase = 3;
 
     string private baseURI;
     string private notRevealedURI;
     string private baseExtension;
 
-    bool public paused;
-    bool public revealed;
-    bool public stacking;
+    bool public paused = false;
+    bool public revealed = false;
+    bool public stacking = false;
+    bool public canChangeBaseURI = true;
+    bool public canChangeNotRevealURI = true;
 
     mapping(address => uint256) public nftsPerWallet;
 
-    function initialize(string memory _name, string memory _symbol) initializer public {
-        __ERC721_init(_name, _symbol);
-
-        MAX_SUPPLY_NFT = 50000;
-        publicSaleNftPrice = 25000000000000000;
-        whitelistSaleNftPrice = 20000000000000000;
-        maxNftPurchase = 3;
-        _ownerAddress = msg.sender;
+    constructor(string memory _name, string memory _symbol) ERC721A(_name, _symbol) Ownable() {
         sellingStep = Steps.NotStarted;
-
-        paused = false;
-        revealed = false;
-        stacking = false;
     }
 
     function _baseURI() internal view  virtual override returns (string memory) {
@@ -69,9 +59,10 @@ contract AdvancedNFT is ERC721EnumerableUpgradeable, ReentrancyGuardUpgradeable 
         if(numberNftSold + _ammount == MAX_SUPPLY_NFT) {
             sellingStep = Steps.SoldOut;
         }
+
+        _safeMint(msg.sender, _ammount);
         
         for(uint256 i = 1 ; i <= _ammount ; i++) {
-            _safeMint(msg.sender, numberNftSold + i);
             nftsPerWallet[msg.sender]++;
         }
     }
@@ -85,44 +76,53 @@ contract AdvancedNFT is ERC721EnumerableUpgradeable, ReentrancyGuardUpgradeable 
         require(numberNftSold + _ammount <= MAX_SUPPLY_NFT, "Sale is almost done and we don't have enought NFTs left.");
         require(msg.value >= whitelistSaleNftPrice * _ammount, "You don't have enough funds.");
 
-        require(_ownerAddress == keccak256(
+        require(owner() == keccak256(
             abi.encodePacked(
                 address(this),
                 msg.sender
             )
         ).toEthSignedMessageHash().recover(signature), "Signer address mismatch.");
 
+        _safeMint(msg.sender, _ammount);
+
         for(uint256 i = 1 ; i <= _ammount ; i++) {
-            _safeMint(msg.sender, numberNftSold + i);
             nftsPerWallet[msg.sender]++;
         }
     }
 
-    function airdropNfts(address _recipient,uint256 _mintAmount) public payable {
+    function airdropNfts(address _recipient,uint256 _mintAmount) public payable onlyOwner {
         require(!paused, "The contract is paused");
         uint256 supply = totalSupply();
         require(_mintAmount > 0, "Need to mint at least 1 NFT");
         require(supply + _mintAmount <= MAX_SUPPLY_NFT, "Max NFT limit");
+        _safeMint(_recipient, _mintAmount);
         for (uint256 i = 1; i <= _mintAmount; i++) {
             nftsPerWallet[_recipient]++;
-            _safeMint(_recipient, supply + i);
         }
     }
 
-    function changePublicSaleNftPrice(uint256 _publicSaleNftPrice) external {
+    function burnNft(uint256 _tokenId) external {
+        _burn(_tokenId);
+    }
+
+    function changePublicSaleNftPrice(uint256 _publicSaleNftPrice) external onlyOwner {
         publicSaleNftPrice = _publicSaleNftPrice;
     }
 
-    function changeWhitelisteSaleNftPrice(uint256 _whitelistSaleNftPrice) external {
+    function changeWhitelisteSaleNftPrice(uint256 _whitelistSaleNftPrice) external onlyOwner {
         whitelistSaleNftPrice = _whitelistSaleNftPrice;
     }
 
-    function setBaseURI(string memory _newBaseURI) external {
+    function setBaseURI(string memory _newBaseURI) external onlyOwner {
+        require(canChangeBaseURI == true, "You can change the uri only once");
         baseURI = _newBaseURI;
+        canChangeBaseURI = false;
     }
 
-    function setNotRevealedURI(string memory _notRevealedURI) public {
+    function setNotRevealedURI(string memory _notRevealedURI) public onlyOwner {
+        require(canChangeNotRevealURI == true, "You can change the uri only once");
         notRevealedURI = _notRevealedURI;
+        canChangeNotRevealURI = false;
     }
 
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
@@ -140,29 +140,20 @@ contract AdvancedNFT is ERC721EnumerableUpgradeable, ReentrancyGuardUpgradeable 
             : "";
     }
 
-    function walletOfOwner(address _owner) public view returns (uint256[] memory) {
-        uint256 ownerTokenCount = balanceOf(_owner);
-        uint256[] memory tokenIds = new uint256[](ownerTokenCount);
-        for (uint256 i; i < ownerTokenCount; i++) {
-            tokenIds[i] = tokenOfOwnerByIndex(_owner, i);
-        }
-        return tokenIds;
-    }
-
-    function launchPublicSale() external {
+    function launchPublicSale() external onlyOwner {
         sellingStep = Steps.PublicSale;
     }
 
-    function launchWhitelistedSale() external {
+    function launchWhitelistedSale() external onlyOwner {
         sellingStep = Steps.WhitelistedSale;
     }
 
-    function reveal() external {
+    function reveal() external onlyOwner {
         sellingStep = Steps.Reveal;
         revealed = true;
     }
 
-    function pause(bool _state) public {
+    function pause(bool _state) public onlyOwner {
         paused = _state;
     }
 
