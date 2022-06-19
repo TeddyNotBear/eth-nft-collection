@@ -1,11 +1,5 @@
 const { initializeApp } = require("firebase/app");
 const { getFirestore, setDoc, doc, getDoc } = require("firebase/firestore");
-/*const admin = require("firebase-admin");
-const serviceAccount = require("./serviceAccount.json");
-
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-});*/
 
 const firebaseConfig = {
     apiKey: "AIzaSyDhNN4rA2kv23OhVzNJPG09zmQ5mXc4koA",

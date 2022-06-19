@@ -4,3 +4,4 @@ metadatas
 .openzeppelin
 .env
 cache
+firebase/serviceAccount.json
