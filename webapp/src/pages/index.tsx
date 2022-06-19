@@ -10,6 +10,7 @@ import WhitelistMintNft from "../components/WhitelistMintNft"
 import SetBaseURI from "../components/SetBaseURI"
 import SetNotRevealedURI from "../components/SetNotRevealedURI"
 import ChangeSellingStep from "../components/ChangeSellingStep"
+import BurnNft from "../components/BurnNft"
 
 declare let window: any
 const CONTRACT_ADDRESS = "0x4f01DA70DC283B2fcb0Ecae1BF37255167b2bcF1"
@@ -121,6 +122,13 @@ const Home: NextPage = () => {
         <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
           <Heading my={4}  fontSize='xl'>Public Mint Nft</Heading>
           <PublicMintNFT
+            addressContract={CONTRACT_ADDRESS}
+            currentAccount={currentAccount}
+          />
+        </Box>
+        <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
+          <Heading my={4}  fontSize='xl'>Burn Nft</Heading>
+          <BurnNft
             addressContract={CONTRACT_ADDRESS}
             currentAccount={currentAccount}
           />

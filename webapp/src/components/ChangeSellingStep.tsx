@@ -77,8 +77,23 @@ export default function ChangeSellingStep(props:Props){
             .catch((e:Error)=>console.log(e))
     }
 
+    async function unpause(event:React.FormEvent) {
+        event.preventDefault()
+        if(!window.ethereum) return    
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const signer = provider.getSigner()
+        const nftCollection:Contract = new ethers.Contract(addressContract, abi, signer)
+
+        nftCollection.unpause()
+            .then((tr: TransactionResponse) => {
+                console.log(`TransactionResponse TX hash: ${tr.hash}`)
+                tr.wait().then((receipt:TransactionReceipt)=>{console.log("unpause receipt", receipt)})
+            })
+            .catch((e:Error)=>console.log(e))
+    }
+
     return (
-        <Grid templateColumns='repeat(4, 1fr)' gap={3}>
+        <Grid templateColumns='repeat(5, 1fr)' gap={3}>
             <form onSubmit={launchPublicSale}>
                 <FormControl>
                     <Button type="submit" colorScheme='pink' w='100%'>
@@ -104,6 +119,13 @@ export default function ChangeSellingStep(props:Props){
                 <FormControl>
                     <Button type="submit" colorScheme='facebook' w='100%'>
                        Pause
+                    </Button>
+                </FormControl>
+            </form>
+            <form onSubmit={unpause}>
+                <FormControl>
+                    <Button type="submit" colorScheme='messenger' w='100%'>
+                       Unpause
                     </Button>
                 </FormControl>
             </form>

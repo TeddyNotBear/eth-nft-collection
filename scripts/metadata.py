@@ -67,7 +67,7 @@ def generateMetadataNotRevealed(dna, id, date):
 def main():
     dt = datetime.now()
     ts = datetime.timestamp(dt)
-    for _ in(i+1 for i in range(4)):
+    for _ in(i for i in range(3)):
         generateMetadata(uuid.uuid4().hex, _, ts)
         generateMetadataNotRevealed(uuid.uuid4().hex, _, ts)
 

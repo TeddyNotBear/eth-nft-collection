@@ -4,13 +4,14 @@ pragma solidity ^0.8.4;
 import "erc721a/contracts/ERC721A.sol";
 import '@openzeppelin/contracts/access/Ownable.sol';
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts-upgradeable/finance/PaymentSplitterUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 // Ownable, Reentrancy, PaymentSplitter
-contract NftCollection is ERC721A, ReentrancyGuard, Ownable {
+contract NftCollection is ERC721A, ReentrancyGuard, Ownable, Pausable {
     using ECDSA for bytes32;
     using Counters for Counters.Counter;
     using Strings for uint256;
@@ -31,7 +32,6 @@ contract NftCollection is ERC721A, ReentrancyGuard, Ownable {
     string private notRevealedURI;
     string private baseExtension;
 
-    bool public paused = false;
     bool public revealed = false;
     bool public stacking = false;
     bool public canChangeBaseURI = true;
@@ -47,7 +47,7 @@ contract NftCollection is ERC721A, ReentrancyGuard, Ownable {
         return baseURI;
     }
 
-    function publicMintNft(uint256 _ammount) external payable nonReentrant {
+    function publicMintNft(uint256 _ammount) external payable nonReentrant whenNotPaused {
         uint256 numberNftSold = totalSupply();
 
         require(totalSupply() < MAX_SUPPLY_NFT, "Sorry, no nfts left.");
@@ -67,7 +67,7 @@ contract NftCollection is ERC721A, ReentrancyGuard, Ownable {
         }
     }
 
-    function whitelistMintNft(uint256 _ammount, bytes calldata signature) public payable {
+    function whitelistMintNft(uint256 _ammount, bytes calldata signature) public payable nonReentrant whenNotPaused {
         uint256 numberNftSold = totalSupply();
 
         require(totalSupply() < MAX_SUPPLY_NFT, "Sorry, no nfts left.");
@@ -90,8 +90,7 @@ contract NftCollection is ERC721A, ReentrancyGuard, Ownable {
         }
     }
 
-    function airdropNfts(address _recipient,uint256 _mintAmount) public payable onlyOwner {
-        require(!paused, "The contract is paused");
+    function airdropNfts(address _recipient,uint256 _mintAmount) public payable onlyOwner whenNotPaused {
         uint256 supply = totalSupply();
         require(_mintAmount > 0, "Need to mint at least 1 NFT");
         require(supply + _mintAmount <= MAX_SUPPLY_NFT, "Max NFT limit");
@@ -101,7 +100,7 @@ contract NftCollection is ERC721A, ReentrancyGuard, Ownable {
         }
     }
 
-    function burnNft(uint256 _tokenId) external {
+    function burnNft(uint256 _tokenId) external whenNotPaused {
         _burn(_tokenId);
     }
 
@@ -140,29 +139,29 @@ contract NftCollection is ERC721A, ReentrancyGuard, Ownable {
             : "";
     }
 
-    function launchPublicSale() external onlyOwner {
+    function launchPublicSale() external onlyOwner whenNotPaused {
         sellingStep = Steps.PublicSale;
     }
 
-    function launchWhitelistedSale() external onlyOwner {
+    function launchWhitelistedSale() external onlyOwner whenNotPaused {
         sellingStep = Steps.WhitelistedSale;
     }
 
-    function reveal() external onlyOwner {
+    function reveal() external onlyOwner whenNotPaused {
         sellingStep = Steps.Reveal;
         revealed = true;
     }
 
-    function pause(bool _state) public onlyOwner {
-        paused = _state;
+    function pause() external onlyOwner {
+        _pause();
+    }
+
+    function unpause() external onlyOwner {
+        _unpause();
     }
 
     function isRevealed() public view returns (bool){
         return revealed;
-    }
-
-    function isPause() public view returns (bool){
-        return paused;
     }
 
     function getPublicSaleNftPrice() public view returns (uint256) {
@@ -185,19 +184,5 @@ contract NftCollection is ERC721A, ReentrancyGuard, Ownable {
             )
         ).toEthSignedMessageHash().recover(signature);
     }
-
-    // fulfillRandomness() --> avoid specific nft giveway
-
-    // reserveNfts()
-        // get totalSupply()
-        // _safeMint(msg.sender, supply + i) loop
-
-    // burnNft()
-
-    // isStakingLive() --> check if stacking is already available
-
-    // staking()
-
-    // add fallback
 
 }

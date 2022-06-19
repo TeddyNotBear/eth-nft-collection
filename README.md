@@ -21,9 +21,21 @@ npx hardhat verify --network rinkeby CONTRACT_ADDRESS "TOKEN_NAME" "TOKEN_SYMBOL
 
 ## Usage
 
-- Install dependencies
+- Install dependencies:
 ```bash
 yarn install
+```
+
+- Generate metadatas:
+```bash
+python3 scripts/metadata.py
+```
+
+- Run script to whitelist users :
+
+You first need to add addresses of users that you want to whitelist inside `scripts/outputs/addresses.json` file. After, run the `signer.js` script in using 
+```bash
+node scripts/signer.js
 ```
 
 - Run web app: 
