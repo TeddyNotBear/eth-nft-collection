@@ -48,7 +48,7 @@ export default function ReadNftCollection(props:Props){
 
         nftCollection.getInitialTotalSupply().then((result:string)=>{
             setMaxSupplyNft(result.toString())
-        }).catch('error', console.error)
+        }).catch('error', console.error )
 
         nftCollection.totalSupply().then((result:string)=>{
             setNftsSold(result.toString())

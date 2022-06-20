@@ -1,17 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "erc721a/contracts/ERC721A.sol";
-import '@openzeppelin/contracts/access/Ownable.sol';
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
+import 'erc721a-upgradeable/contracts/ERC721AUpgradeable.sol';
+import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/finance/PaymentSplitterUpgradeable.sol";
+
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 // Ownable, Reentrancy, PaymentSplitter
-contract NftCollection is ERC721A, ReentrancyGuard, Ownable, Pausable {
+contract NftCollection is ERC721AUpgradeable, ReentrancyGuardUpgradeable, OwnableUpgradeable, PausableUpgradeable {
     using ECDSA for bytes32;
     using Counters for Counters.Counter;
     using Strings for uint256;
@@ -23,24 +24,37 @@ contract NftCollection is ERC721A, ReentrancyGuard, Ownable, Pausable {
     enum Steps { NotStarted, WhitelistedSale, PublicSale, SoldOut, Reveal }
     Steps public sellingStep;
 
-    uint256 public MAX_SUPPLY_NFT = 50000;
-    uint256 public publicSaleNftPrice = 25000000000000000;
-    uint256 public whitelistSaleNftPrice = 20000000000000000;
-    uint256 public maxNftPurchase = 3;
+    uint256 public MAX_SUPPLY_NFT;
+    uint256 public publicSaleNftPrice;
+    uint256 public whitelistSaleNftPrice;
+    uint256 public maxNftPurchase;
 
     string private baseURI;
     string private notRevealedURI;
     string private baseExtension;
 
-    bool public revealed = false;
-    bool public stacking = false;
-    bool public canChangeBaseURI = true;
-    bool public canChangeNotRevealURI = true;
+    bool public revealed;
+    bool public stacking;
+    bool public canChangeBaseURI;
+    bool public canChangeNotRevealURI;
 
     mapping(address => uint256) public nftsPerWallet;
 
-    constructor(string memory _name, string memory _symbol) ERC721A(_name, _symbol) Ownable() {
+    function initialize(string memory _name, string memory _symbol) initializerERC721A initializer public {
+        __ERC721A_init(_name, _symbol);
+        __Ownable_init();
+        __Pausable_init();
+        __ReentrancyGuard_init();
+
         sellingStep = Steps.NotStarted;
+        MAX_SUPPLY_NFT = 50000;
+        publicSaleNftPrice = 25000000000000000;
+        whitelistSaleNftPrice = 20000000000000000;
+        maxNftPurchase = 3;
+        revealed = false;
+        stacking = false;
+        canChangeBaseURI = true;
+        canChangeNotRevealURI = true;
     }
 
     function _baseURI() internal view  virtual override returns (string memory) {

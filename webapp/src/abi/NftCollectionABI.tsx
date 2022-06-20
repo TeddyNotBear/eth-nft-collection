@@ -1,21 +1,5 @@
 export const NftCollectionABI  = [
   {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "_name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_symbol",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
     "inputs": [],
     "name": "ApprovalCallerNotOwnerNorApproved",
     "type": "error"
@@ -27,17 +11,17 @@ export const NftCollectionABI  = [
   },
   {
     "inputs": [],
+    "name": "ApprovalToCurrentOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "ApproveToCaller",
     "type": "error"
   },
   {
     "inputs": [],
     "name": "BalanceQueryForZeroAddress",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "MintERC2309QuantityExceedsLimit",
     "type": "error"
   },
   {
@@ -53,11 +37,6 @@ export const NftCollectionABI  = [
   {
     "inputs": [],
     "name": "OwnerQueryForNonexistentToken",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "OwnershipNotInitializedForExtraData",
     "type": "error"
   },
   {
@@ -139,31 +118,13 @@ export const NftCollectionABI  = [
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "fromTokenId",
-        "type": "uint256"
-      },
-      {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "toTokenId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
+        "internalType": "uint8",
+        "name": "version",
+        "type": "uint8"
       }
     ],
-    "name": "ConsecutiveTransfer",
+    "name": "Initialized",
     "type": "event"
   },
   {
@@ -189,6 +150,19 @@ export const NftCollectionABI  = [
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Paused",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "from",
@@ -208,6 +182,19 @@ export const NftCollectionABI  = [
       }
     ],
     "name": "Transfer",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Unpaused",
     "type": "event"
   },
   {
@@ -423,6 +410,24 @@ export const NftCollectionABI  = [
   {
     "inputs": [
       {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_symbol",
+        "type": "string"
+      }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "owner",
         "type": "address"
@@ -434,19 +439,6 @@ export const NftCollectionABI  = [
       }
     ],
     "name": "isApprovedForAll",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "isPause",
     "outputs": [
       {
         "internalType": "bool",
@@ -562,13 +554,7 @@ export const NftCollectionABI  = [
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "bool",
-        "name": "_state",
-        "type": "bool"
-      }
-    ],
+    "inputs": [],
     "name": "pause",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -857,6 +843,13 @@ export const NftCollectionABI  = [
       }
     ],
     "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "unpause",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

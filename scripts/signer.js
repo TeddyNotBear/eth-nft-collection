@@ -6,7 +6,7 @@ const addresses = require("./outputs/addresses.json");
 const insertData = require("../firebase/firestore");
 const signer = new ethers.Wallet(process.env.WALLET_PK);
 
-const CONTRACT_ADDRESS = "0x098Cd16b87df934362b445E3C0f32b0535c1D1C8";
+const CONTRACT_ADDRESS = "0xE329eD7aca3A4a02348d10F501d9fA367995B0DC";
 
 const signedMessages = {};
 

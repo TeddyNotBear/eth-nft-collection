@@ -4,6 +4,7 @@ import { VStack, Heading, Box, LinkOverlay, LinkBox} from "@chakra-ui/layout"
 import { Text, Button } from '@chakra-ui/react'
 import { useState, useEffect} from 'react'
 import { ethers } from "ethers"
+import Initialize from "../components/Inititalize"
 import ReadNftCollection from "../components/ReadNftCollection"
 import PublicMintNFT from "../components/PublicMintNft"
 import WhitelistMintNft from "../components/WhitelistMintNft"
@@ -13,7 +14,7 @@ import ChangeSellingStep from "../components/ChangeSellingStep"
 import BurnNft from "../components/BurnNft"
 
 declare let window: any
-const CONTRACT_ADDRESS = "0x098Cd16b87df934362b445E3C0f32b0535c1D1C8"
+const CONTRACT_ADDRESS = "0xE329eD7aca3A4a02348d10F501d9fA367995B0DC"
 
 const Home: NextPage = () => {
   const [balance, setBalance] = useState<string | undefined>()
@@ -94,6 +95,13 @@ const Home: NextPage = () => {
         <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
           <Heading my={4}  fontSize='xl'>Change selling step</Heading>
           <ChangeSellingStep 
+            addressContract={CONTRACT_ADDRESS}
+            currentAccount={currentAccount}
+          />
+        </Box>
+        <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
+          <Heading my={4}  fontSize='xl'>Initialize</Heading>
+          <Initialize 
             addressContract={CONTRACT_ADDRESS}
             currentAccount={currentAccount}
           />

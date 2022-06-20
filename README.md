@@ -11,12 +11,12 @@
 
 - Deploy contract on rinkeby testnet: 
 ```bash
-npx hardhat run scripts/deploy.js --network rinkeby
+npx hardhat run --network rinkeby scripts/deploy_upgradeable.js
 ```
 
 - Verify contract code: 
 ```bash
-npx hardhat verify --network rinkeby CONTRACT_ADDRESS "TOKEN_NAME" "TOKEN_SYMBOL"
+npx hardhat verify --network rinkeby CONTRACT_ADDRESS
 ```
 
 ## Usage
