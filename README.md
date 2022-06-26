@@ -14,6 +14,11 @@
 npx hardhat run --network rinkeby scripts/deploy_upgradeable.js
 ```
 
+- Deploy trasnfer ownership on rinkeby testnet: 
+```bash
+npx hardhat run --network rinkeby scripts/transfer_ownership.js
+```
+
 - Verify contract code: 
 ```bash
 npx hardhat verify --network rinkeby CONTRACT_ADDRESS
@@ -48,5 +53,17 @@ node scripts/signer.js
 cd webapp
 yarn dev
 ```
+
+
+npx hardhat console --network rinkeby
+> const NftCollection = await ethers.getContractFactory("NftCollection")
+> const nftCollection = await NftCollection.attach("0x82A0584632051f088237E0F61799bbF57d585349")
+> await nftCollection.launchPublicSale()
+> await nftCollection.publicMintNft(1, {value: ethers.utils.parseEther("0.025") })
+> (await nftCollection.balanceOf("0xf70A19b87c9b19F1D2CCeE8A198399626002EeFF")).toString()
+
+> const NftCollectionV2 = await ethers.getContractFactory("NftCollectionV2")
+> const nftCollectionV2 = await NftCollectionV2.attach("0x82A0584632051f088237E0F61799bbF57d585349")
+> (await nftCollectionV2.balanceOf("0xf70A19b87c9b19F1D2CCeE8A198399626002EeFF")).toString()
 
 
