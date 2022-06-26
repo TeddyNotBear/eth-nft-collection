@@ -14,7 +14,7 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "./HybridToken.sol";
 
 // Ownable, Reentrancy, PaymentSplitter
-contract NftCollection is ERC721AUpgradeable, ReentrancyGuardUpgradeable, OwnableUpgradeable, PausableUpgradeable {
+contract NftCollectionV2 is ERC721AUpgradeable, ReentrancyGuardUpgradeable, OwnableUpgradeable, PausableUpgradeable {
     using ECDSA for bytes32;
     using Counters for Counters.Counter;
     using Strings for uint256;
