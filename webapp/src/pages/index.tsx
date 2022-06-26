@@ -12,9 +12,10 @@ import SetBaseURI from "../components/SetBaseURI"
 import SetNotRevealedURI from "../components/SetNotRevealedURI"
 import ChangeSellingStep from "../components/ChangeSellingStep"
 import BurnNft from "../components/BurnNft"
+import AirdropNfts from "../components/AirdropNfts"
 
 declare let window: any
-const CONTRACT_ADDRESS = "0xE329eD7aca3A4a02348d10F501d9fA367995B0DC"
+const CONTRACT_ADDRESS = "0x7Cf389ebC171501ae6b2f2A8D78ed5b231F6B08b"
 
 const Home: NextPage = () => {
   const [balance, setBalance] = useState<string | undefined>()
@@ -116,6 +117,13 @@ const Home: NextPage = () => {
         <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
           <Heading my={4}  fontSize='xl'>Set not revealed URI</Heading>
           <SetNotRevealedURI 
+            addressContract={CONTRACT_ADDRESS}
+            currentAccount={currentAccount}
+          />
+        </Box>
+        <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
+          <Heading my={4}  fontSize='xl'>Airdrop Nfts</Heading>
+          <AirdropNfts 
             addressContract={CONTRACT_ADDRESS}
             currentAccount={currentAccount}
           />
