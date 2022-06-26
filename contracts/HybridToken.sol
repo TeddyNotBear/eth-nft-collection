@@ -15,7 +15,10 @@ contract HybridToken is ERC1155, Ownable, ReentrancyGuard, Pausable {
 
     Counters.Counter private _nftIdCounter;
 
+    uint256 public constant REWARD_TOKENS = 0;
+
     constructor() public ERC1155("") {
+        _mint(msg.sender, REWARD_TOKENS, 10**18, "");
     }
 
     function breeding() external {
