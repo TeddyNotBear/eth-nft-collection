@@ -16,10 +16,16 @@ async function main () {
     );
     await nftCollection.deployed();
     console.log('NftCollection deployed to:', nftCollection.address);
+    
     // REMOVE BREEDING WHEN FULLY TESTED
+    const BreededNft = await ethers.getContractFactory("BreededNft");
+    console.log("Deploying BreededNft...");
+    const breededNft = await BreededNft.deploy();
+    await breededNft.deployed();
+    console.log(`BreededNft deployed to: ${breededNft.address}`);
     const Breeding = await ethers.getContractFactory("Breeding");
     console.log("Preparing to deploy breeding contract...");
-    const breedingContract = await Breeding.deploy(nftCollection.address);
+    const breedingContract = await Breeding.deploy(nftCollection.address, breededNft.address);
     await breedingContract.deployed();
     console.log(`Breeding contract is deployed to: ${breedingContract.address}`);
 }
