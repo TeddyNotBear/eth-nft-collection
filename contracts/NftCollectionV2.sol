@@ -23,10 +23,6 @@ contract NftCollectionV2 is ERC721AUpgradeable, ReentrancyGuardUpgradeable, Owna
 
     HybridToken hybridToken;
 
-    event Staked(address indexed owner, uint256 nftId, uint256 value);
-    event Unstaked(address indexed owner, uint256 nftId, uint256 value);
-    event Claimed(address indexed owner, uint256 amount);
-
     enum Steps { NotStarted, WhitelistedSale, PublicSale, SoldOut, Reveal }
     Steps public sellingStep;
 
@@ -146,7 +142,6 @@ contract NftCollectionV2 is ERC721AUpgradeable, ReentrancyGuardUpgradeable, Owna
             require(nftsStaked[nftId].stakingStartTime == 0, "Already Staked");
 
             transferFrom(msg.sender, address(this), nftId);
-            emit Staked(msg.sender, nftId, uint256(block.timestamp));
 
             nftsStaked[nftId] = Staking({
                 nftId: nftId,

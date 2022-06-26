@@ -23,10 +23,6 @@ contract NftCollection is ERC721AUpgradeable, ReentrancyGuardUpgradeable, Ownabl
 
     HybridToken hybridToken;
 
-    event Staked(address indexed owner, uint256 nftId, uint256 value);
-    event Unstaked(address indexed owner, uint256 nftId, uint256 value);
-    event Claimed(address indexed owner, uint256 amount);
-
     enum Steps { NotStarted, WhitelistedSale, PublicSale, SoldOut, Reveal }
     Steps public sellingStep;
 

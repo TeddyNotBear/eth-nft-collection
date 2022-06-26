@@ -19,6 +19,11 @@ npx hardhat run --network rinkeby scripts/deploy_upgradeable.js
 npx hardhat verify --network rinkeby CONTRACT_ADDRESS
 ```
 
+- Upgrade the contract with stake function:
+```bash
+npx hardhat run --network rinkeby scripts/deploy_upgradeable_staking.js
+```
+
 ## Usage
 
 - Install dependencies:

@@ -9,6 +9,12 @@ require('dotenv').config()
  */
 module.exports = {
   solidity: "0.8.7",
+  settings: {
+    optimizer: {
+      enabled: true,
+      runs: 1,
+    },
+  },
   networks: {
     rinkeby: {
       url: process.env.RPC || "https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
