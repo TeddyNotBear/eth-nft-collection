@@ -19,5 +19,6 @@ contract Breeding {
 
         nftCollection.burnNft(token1);
         nftCollection.burnNft(token2);
+        
     }
 }

@@ -7,6 +7,7 @@ async function main() {
   const nftCollectionV2Addr = await upgrades.prepareUpgrade(PROXY_ADDRESS, NftCollectionV2);
   console.log("NftCollectionV2 at:", nftCollectionV2Addr);
 
+  // UNCOMMENT THIS ONCE FULLY TESTED
   // const Breeding = await ethers.getContractFactory("Breeding");
   // console.log("Preparing to deploy breeding contract...");
   // const breedingContract = await Breeding.deploy(nftCollectionV2Addr);

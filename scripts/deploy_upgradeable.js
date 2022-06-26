@@ -16,7 +16,7 @@ async function main () {
     );
     await nftCollection.deployed();
     console.log('NftCollection deployed to:', nftCollection.address);
-
+    // REMOVE BREEDING WHEN FULLY TESTED
     const Breeding = await ethers.getContractFactory("Breeding");
     console.log("Preparing to deploy breeding contract...");
     const breedingContract = await Breeding.deploy(nftCollection.address);
