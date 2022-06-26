@@ -136,6 +136,26 @@ contract NftCollection is ERC721AUpgradeable, ReentrancyGuardUpgradeable, Ownabl
         _burn(_tokenId);
     }
 
+    function stake(uint256[] calldata nftIds) external {
+        uint256 nftId;
+        totalStaked += nftIds.length;
+
+        for(uint256 i = 0; i < nftIds.length; i++) {
+            nftId = nftIds[i];
+            require(ownerOf(nftId) == msg.sender, "Not the owner");
+            require(nftsStaked[nftId].stakingStartTime == 0, "Already Staked");
+
+            transferFrom(msg.sender, address(this), nftId);
+            emit Staked(msg.sender, nftId, uint256(block.timestamp));
+
+            nftsStaked[nftId] = Staking({
+                nftId: nftId,
+                stakingStartTime: block.timestamp,
+                owner: msg.sender
+            });
+        }
+    }
+
     function changePublicSaleNftPrice(uint256 _publicSaleNftPrice) external onlyOwner {
         publicSaleNftPrice = _publicSaleNftPrice;
     }
