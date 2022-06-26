@@ -16,6 +16,12 @@ async function main () {
     );
     await nftCollection.deployed();
     console.log('NftCollection deployed to:', nftCollection.address);
+
+    const Breeding = await ethers.getContractFactory("Breeding");
+    console.log("Preparing to deploy breeding contract...");
+    const breedingContract = await Breeding.deploy(nftCollection.address);
+    await breedingContract.deployed();
+    console.log(`Breeding contract is deployed to: ${breedingContract.address}`);
 }
 
 main();

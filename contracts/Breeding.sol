@@ -1,23 +1,23 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "./NftCollectionV2.sol";
+import "./NftCollection.sol";
 
 contract Breeding {
-    NftCollectionV2 public immutable nftCollectionV2;
+    NftCollection public immutable nftCollection;
 
-    constructor(NftCollectionV2 _nftCollectionV2) {
-        nftCollectionV2 = _nftCollectionV2;
+    constructor(NftCollection _nftCollection) {
+        nftCollection = _nftCollection;
     }
 
-    function breed(uint256 token1, uint256 token2) external {
+    function breed(uint256 token1, uint256 token2) public payable {
 
-        require(nftCollectionV2.ownerOf(token1) == msg.sender, "It's not your NFT");
-        require(nftCollectionV2.ownerOf(token2) == msg.sender, "It's not your NFT");
+        require(nftCollection.ownerOf(token1) == msg.sender, "It's not your NFT");
+        require(nftCollection.ownerOf(token2) == msg.sender, "It's not your NFT");
 
-        nftCollectionV2.airdropNfts(msg.sender, 1);
+        nftCollection.airdropNfts{value: msg.value}(msg.sender, 1);
 
-        nftCollectionV2.burnNft(token1);
-        nftCollectionV2.burnNft(token2);
+        nftCollection.burnNft(token1);
+        nftCollection.burnNft(token2);
     }
 }
