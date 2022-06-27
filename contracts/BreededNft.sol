@@ -22,8 +22,6 @@ contract BreededNft is ERC721AUpgradeable, OwnableUpgradeable {
     bool public canChangeBaseURI;
     bool public canChangeNotRevealURI;
 
-    mapping(address => uint256) public nftsPerWallet;
-
     function initialize(string memory _name, string memory _symbol) initializerERC721A public {
         __ERC721A_init(_name, _symbol);
         __Ownable_init();
@@ -37,10 +35,6 @@ contract BreededNft is ERC721AUpgradeable, OwnableUpgradeable {
 
     function mintNft(uint256 _ammount) external payable {
         _safeMint(msg.sender, _ammount);
-        
-        for(uint256 i = 1 ; i <= _ammount ; i++) {
-            nftsPerWallet[msg.sender]++;
-        }
     }
 
     function burnNft(uint256 _tokenId) external {
