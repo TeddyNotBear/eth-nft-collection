@@ -5,6 +5,7 @@ import 'erc721a-upgradeable/contracts/ERC721AUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/finance/PaymentSplitterUpgradeable.sol";
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -50,6 +51,10 @@ contract NftCollectionV2 is ERC721AUpgradeable, ReentrancyGuardUpgradeable, Owna
 
     mapping(address => uint256) public nftsPerWallet;
     mapping(uint256 => Staking) public nftsStaked;
+
+    event Staked(address indexed owner, uint tokenId, uint value);
+    event Unstaked(address indexed owner, uint tokenId, uint value);
+    event Claimed(address indexed owner, uint amount);
 
     function initialize(string memory _name, string memory _symbol, HybridToken _hybridToken) initializerERC721A initializer public {
         __ERC721A_init(_name, _symbol);
@@ -150,6 +155,96 @@ contract NftCollectionV2 is ERC721AUpgradeable, ReentrancyGuardUpgradeable, Owna
         }
     }
 
+    function _unstakeMany(address owner, uint [] calldata nftIds) internal {
+        uint nftId;
+        totalStaked -= nftIds.length;
+
+        for(uint i = 0 ; i < nftIds.length ; i++) {
+            nftId = nftIds[i];
+            require(nftsStaked[nftId].owner == msg.sender, "not owner");
+
+            emit Unstaked(owner, nftId, block.timestamp);
+            delete nftsStaked[nftId];
+
+            transferFrom(address(this), owner, nftId);
+        }
+    }
+    function claim(uint[] calldata nftIds) external {
+        _claim(msg.sender, nftIds, false);
+    }
+
+    function unstake(uint[] calldata nftIds) external {
+        _claim(msg.sender, nftIds, true);
+    }
+
+    function _claim(address owner, uint[] calldata nftIds, bool _unstake) internal {
+        uint nftId;
+        uint earned;
+        uint totalEarned;
+
+        for(uint i = 0 ; i < nftIds.length ; i++) {
+            nftId = nftIds[i];
+            Staking memory thisStake = nftsStaked[nftId];
+            require(thisStake.owner == owner, "not owner cant claim reward");
+
+            uint stakingStartTime = thisStake.stakingStartTime;
+            //10k jeton /h /NFT
+            earned = (block.timestamp - stakingStartTime) * rewardsPerBlock / 3600;
+            totalEarned += earned;
+
+            nftsStaked[nftId] = Staking({
+                nftId: uint24(nftId),
+                stakingStartTime: uint48(block.timestamp),
+                owner: owner
+            });
+        }
+
+        if(totalEarned > 0) {
+            hybridToken.mint(owner, nftId, totalEarned, "");
+        }
+        if(_unstake) {
+            _unstakeMany(owner, nftIds);
+        }
+        emit Claimed(owner, totalEarned);
+    }
+
+    function getRewardAmount(address owner, uint[] calldata nftIds) external view returns(uint) {
+        uint nftId;
+        uint earned;
+        uint totalEarned;
+
+        for(uint i = 0 ; i < nftIds.length ; i++) {
+            nftId = nftIds[i];
+            Staking memory thisStake = nftsStaked[nftId];
+            require(thisStake.owner == owner, "not owner cant claim reward");
+
+            uint stakingStartTime = thisStake.stakingStartTime;
+
+            earned = (block.timestamp - stakingStartTime) * rewardsPerBlock / 3600;
+            totalEarned += earned;
+        }
+        return totalEarned;
+    }
+
+    function tokenStakedByOwner(address owner) external view returns(uint[] memory) {
+        uint totalSupply = totalSupply();
+        uint[] memory tmp = new uint[](totalSupply);
+        uint index = 0;
+
+        for(uint i = 0 ; i < totalSupply ; i++) {
+            if(nftsStaked[i].owner == owner) {
+                tmp[index] = i;
+                index++;
+            }
+        }
+        
+        uint[] memory tokens = new uint[](index);
+        for(uint i = 0 ; i < index ; i++) {
+            tokens[i] = tmp[i];
+        }
+        return tokens;
+    }
+
     function changePublicSaleNftPrice(uint256 _publicSaleNftPrice) external onlyOwner {
         publicSaleNftPrice = _publicSaleNftPrice;
     }
@@ -230,5 +325,4 @@ contract NftCollectionV2 is ERC721AUpgradeable, ReentrancyGuardUpgradeable, Owna
             )
         ).toEthSignedMessageHash().recover(signature);
     }
-
 }
