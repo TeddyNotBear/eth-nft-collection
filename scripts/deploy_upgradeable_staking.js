@@ -1,5 +1,7 @@
 const { ethers, upgrades } = require("hardhat");
-const PROXY_ADDRESS = "";
+require('dotenv').config()
+
+const PROXY_ADDRESS = process.env.PROXY_ADDRESS;
 
 async function main() {
   const NftCollectionV2 = await ethers.getContractFactory("NftCollectionV2");

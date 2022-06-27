@@ -13,6 +13,12 @@
 ```bash
 npx hardhat run --network rinkeby scripts/deploy_upgradeable.js
 ```
+Pay attention to enter the returned address in the `.env` file in PROXY_ADDRESS key.
+
+- Deploy transfer ownership on rinkeby testnet: 
+```bash
+npx hardhat run --network rinkeby scripts/transfer_ownership.js
+```
 
 - Verify contract code: 
 ```bash
@@ -23,6 +29,25 @@ npx hardhat verify --network rinkeby CONTRACT_ADDRESS
 ```bash
 npx hardhat run --network rinkeby scripts/deploy_upgradeable_staking.js
 ```
+
+How to test the contract versions : 
+
+```bash
+npx hardhat console --network rinkeby
+const NftCollection = await ethers.getContractFactory("NftCollection")
+const nftCollection = await NftCollection.attach(PROXY_ADDRESS)
+await nftCollection.launchPublicSale()
+await nftCollection.publicMintNft(1, {value: ethers.utils.parseEther("0.025") })
+(await nftCollection.balanceOf(PUBLIC_KEY)).toString()
+
+const NftCollectionV2 = await ethers.getContractFactory("NftCollectionV2")
+const nftCollectionV2 = await NftCollectionV2.attach(PROXY_ADDRESS)
+(await nftCollectionV2.balanceOf(PUBLIC_KEY)).toString()
+```
+- Replace "PROXY_ADDRESS" by the proxy address that you previously entered in your `.env`.
+- Replace "PUBLIC_KEY" by the product key that is associated with the private key you previously entered in your `.env`.
+
+source : https://forum.openzeppelin.com/t/openzeppelin-upgrades-step-by-step-tutorial-for-hardhat/3580
 
 ## Usage
 
@@ -48,5 +73,3 @@ node scripts/signer.js
 cd webapp
 yarn dev
 ```
-
-

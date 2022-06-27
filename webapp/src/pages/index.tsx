@@ -15,7 +15,7 @@ import BurnNft from "../components/BurnNft"
 import AirdropNfts from "../components/AirdropNfts"
 
 declare let window: any
-const CONTRACT_ADDRESS = "0x7Cf389ebC171501ae6b2f2A8D78ed5b231F6B08b"
+const CONTRACT_ADDRESS = "0xa58841c656f155ad2b4dd32f627dbdfc5417da10"
 
 const Home: NextPage = () => {
   const [balance, setBalance] = useState<string | undefined>()

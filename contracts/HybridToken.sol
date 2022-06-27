@@ -10,6 +10,9 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract HybridToken is ERC1155, Ownable, ReentrancyGuard, Pausable {
+
+    mapping(address => bool) admins;
+
     using Counters for Counters.Counter;
     using Strings for uint256;
 
@@ -17,8 +20,11 @@ contract HybridToken is ERC1155, Ownable, ReentrancyGuard, Pausable {
 
     uint256 public constant REWARD_TOKENS = 0;
 
-    constructor() public ERC1155("") {
-        _mint(msg.sender, REWARD_TOKENS, 10**18, "");
+    constructor() public ERC1155("Test") {}
+
+    function mint(address _to, uint256 id, uint _amount, bytes memory data) external {
+        require(admins[msg.sender], "not able to mint");
+        _mint(_to, id, _amount, data);
     }
 
     function _ownerOf(uint256 tokenId) internal view returns (bool) {
@@ -28,5 +34,13 @@ contract HybridToken is ERC1155, Ownable, ReentrancyGuard, Pausable {
     function burn (uint256 tokenId) external {
         require(_ownerOf(tokenId) == true, "It's not your token");
         _burn(msg.sender, tokenId, 1);
+    }
+    
+    function addAdmin(address _admin) external onlyOwner {
+        admins[_admin] = true;
+    }
+
+    function removeAdmin(address _admin) external onlyOwner {
+        admins[_admin] = false;
     }
 }
