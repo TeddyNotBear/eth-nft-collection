@@ -20,7 +20,7 @@ contract HybridToken is ERC1155, Ownable, ReentrancyGuard, Pausable {
 
     uint256 public constant REWARD_TOKENS = 0;
 
-    constructor() public ERC1155("Test") {}
+    constructor() public ERC1155("") {}
 
     function mint(address _to, uint256 id, uint _amount, bytes memory data) external {
         require(admins[msg.sender], "not able to mint");
@@ -35,7 +35,7 @@ contract HybridToken is ERC1155, Ownable, ReentrancyGuard, Pausable {
         require(_ownerOf(tokenId) == true, "It's not your token");
         _burn(msg.sender, tokenId, 1);
     }
-    
+
     function addAdmin(address _admin) external onlyOwner {
         admins[_admin] = true;
     }

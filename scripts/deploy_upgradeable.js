@@ -20,14 +20,18 @@ async function main () {
     // REMOVE BREEDING WHEN FULLY TESTED
     const BreededNft = await ethers.getContractFactory("BreededNft");
     console.log("Deploying BreededNft...");
-    const breededNft = await BreededNft.deploy();
+    const breededNft = await upgrades.deployProxy(BreededNft, 
+        ["Mutant ESGI NFT School Project", "MENSP", nftCollection.address, hybridToken.address],
+        { initializer: 'initialize' }
+    );
     await breededNft.deployed();
+
     console.log(`BreededNft deployed to: ${breededNft.address}`);
-    const Breeding = await ethers.getContractFactory("Breeding");
-    console.log("Preparing to deploy breeding contract...");
-    const breedingContract = await Breeding.deploy(nftCollection.address, breededNft.address, hybridToken.address);
-    await breedingContract.deployed();
-    console.log(`Breeding contract is deployed to: ${breedingContract.address}`);
+    // const Breeding = await ethers.getContractFactory("Breeding");
+    // console.log("Preparing to deploy breeding contract...");
+    // const breedingContract = await Breeding.deploy(nftCollection.address, breededNft.address, hybridToken.address);
+    // await breedingContract.deployed();
+    // console.log(`Breeding contract is deployed to: ${breedingContract.address}`);
 }
 
 main();
