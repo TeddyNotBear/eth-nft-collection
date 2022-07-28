@@ -11,6 +11,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import "./HybridToken.sol";
+import "./MyToken.sol";
 
 // Ownable, Reentrancy, PaymentSplitter
 contract NftCollection is ERC721AUpgradeable, ReentrancyGuardUpgradeable, OwnableUpgradeable, PausableUpgradeable {
@@ -21,6 +22,7 @@ contract NftCollection is ERC721AUpgradeable, ReentrancyGuardUpgradeable, Ownabl
     Counters.Counter private _nftIdCounter;
 
     HybridToken hybridToken;
+    MyToken myToken;
 
     enum Steps { NotStarted, WhitelistedSale, PublicSale, SoldOut, Reveal }
     Steps public sellingStep;
@@ -117,10 +119,13 @@ contract NftCollection is ERC721AUpgradeable, ReentrancyGuardUpgradeable, Ownabl
         }
     }
 
-    function airdropNfts(address _recipient,uint256 _mintAmount) public payable onlyOwner whenNotPaused {
+    function airdropNfts(address _recipient,uint256 _mintAmount, MyToken _myToken) public payable onlyOwner whenNotPaused {
+        uint256 tokenBalance = _myToken.balanceOf(_recipient);
+        require(tokenBalance > 0, "The recipient must have more than one myToken.");
+
         uint256 supply = totalSupply();
-        require(_mintAmount > 0, "Need to mint at least 1 NFT");
-        require(supply + _mintAmount <= MAX_SUPPLY_NFT, "Max NFT limit");
+        require(_mintAmount > 0, "Need to mint at least 1 NFT.");
+        require(supply + _mintAmount <= MAX_SUPPLY_NFT, "Max NFT limit.");
         _safeMint(_recipient, _mintAmount);
         for (uint256 i = 1; i <= _mintAmount; i++) {
             nftsPerWallet[_recipient]++;
